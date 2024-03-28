@@ -1,60 +1,3 @@
-// import { useEffect, useState } from 'react'
-// import './App.css'
-
-// type Todo = {
-//   id: number, 
-//   text: string,
-//   userId: string,
-//   createdAt: string,
-// }
-// function App() {
-//   const [todo, setTodo] = useState<Todo[]>([]);
-//   const [text, setText] = useState('');
-
-//   useEffect(() => {
-//     async function fetchTodo() {
-//     const res = await fetch(import.meta.env.VITE_APP_API_URL + '/todos')
-//     const data = await res.json()
-//     setTodo(data.todos);
-//   }
-//   fetchTodo();
-//   }, []);
-  
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     const res = await fetch(import.meta.env.VITE_APP_API_URL + '/todos', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ todo: { text } }),
-//     });
-//     const data = await res.json();
-//     setTodo(data.todos);
-//     setText('');
-//   };
-
-//   return (
-//     <div className="App">
-//       <div className="card">
-//         {todo.map((t) => (
-//           <div key={t.id}>{t.text}</div>
-//         ))}
-//       </div>
-//         <form
-//           onSubmit={handleSubmit}
-//         >
-//           <input
-//             type="text"
-//             value={text}
-//             onChange={(e) => setText(e.target.value)}
-//           />
-//           <button type="submit">Add</button>
-//         </form>
-
-//       </div>
-//   );
-// }
-
-// export default App
 import { useEffect, useState } from 'react'
 import './App.css'
 
@@ -134,4 +77,3 @@ function App() {
 }
 
 export default App;
-
