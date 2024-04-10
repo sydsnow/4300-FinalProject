@@ -2,8 +2,20 @@ import { StackContext, Api, EventBus, StaticSite } from "sst/constructs";
 
 export function API({ stack }: StackContext) {
 
+  const audience = `api-todo-list-${stack.stage}`
+  console.log("audience", audience)
   const api = new Api(stack, "api", {
+    authorizers: {
+      myAuthorizer: {
+        type: "jwt",
+        jwt: {
+          issuer: "https://sydsnow.kinde.com",
+          audience: [audience],
+        },
+      },
+    },
     defaults: {
+      authorizer: "myAuthorizer",
       function: {
         environment: {
           DRIZZLE_DATABASE_URL: process.env.DRIZZLE_DATABASE_URL!,
@@ -11,7 +23,12 @@ export function API({ stack }: StackContext) {
       }
     },
     routes: {
-      "GET /": "packages/functions/src/lambda.handler",
+      "GET /": {
+        authorizer: "none",
+        function: {
+          handler: "packages/functions/src/lambda.handler"
+        }
+      },
       "GET /todos": "packages/functions/src/todos.handler",
       "POST /todos": "packages/functions/src/todos.handler",
     },
@@ -23,6 +40,7 @@ export function API({ stack }: StackContext) {
     buildCommand: "npm run build",
     environment: {
       VITE_APP_API_URL: api.url,
+      VITE_APP_KINDE_AUDIENCE: audience,
     },
   });
 

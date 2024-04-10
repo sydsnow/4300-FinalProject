@@ -15,9 +15,9 @@ export const todos = pgTable(
         id: serial('id').primaryKey(),
         userId: text("user_id").notNull(),
         text: varchar('text', { length: 256 }),
-        createdAt: timestamp("created_at", { withTimezone: true })
-            .notNull()
-            .defaultNow(),
+        // createdAt: timestamp("created_at", { withTimezone: true })
+        //     .notNull()
+        //     .defaultNow(),
     },
     (table) => {
         return {
