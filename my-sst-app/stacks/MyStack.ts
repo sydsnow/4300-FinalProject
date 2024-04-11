@@ -1,8 +1,11 @@
-import { StackContext, Api, EventBus, StaticSite } from "sst/constructs";
+import { StackContext, Api, EventBus, StaticSite, Bucket } from "sst/constructs";
 
 export function API({ stack }: StackContext) {
 
-  const audience = `api-todo-list-${stack.stage}`
+  const audience = `api-todo-list-${stack.stage}`;
+
+  const assetsBucket = new Bucket(stack, "assets");
+
   console.log("audience", audience)
   const api = new Api(stack, "api", {
     authorizers: {
@@ -31,6 +34,14 @@ export function API({ stack }: StackContext) {
       },
       "GET /todos": "packages/functions/src/todos.handler",
       "POST /todos": "packages/functions/src/todos.handler",
+      "POST /signed-url":{
+        function: {
+          environment: {
+            BUCKET_NAME: assetsBucket.bucketName,
+          },
+          handler: "packages/functions/src/s3.handler",
+        }
+      }
     },
   });
 
