@@ -23,7 +23,6 @@ export const Route = createRootRouteWithContext<{
         <Link to="/" className="[&.active]:font-bold">
           Home
         </Link>{' '}
-        
             <Link to="/todos" className="[&.active]:font-bold">
             Todo List
             </Link>{" "}

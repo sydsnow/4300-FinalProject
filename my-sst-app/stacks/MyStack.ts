@@ -12,7 +12,7 @@ export function API({ stack }: StackContext) {
       myAuthorizer: {
         type: "jwt",
         jwt: {
-          issuer: "https://sydsnow.kinde.com",
+          issuer: "https://mytodoapp.kinde.com",
           audience: [audience],
         },
       },
@@ -33,7 +33,12 @@ export function API({ stack }: StackContext) {
         }
       },
       "GET /todos": "packages/functions/src/todos.handler",
-      "POST /todos": "packages/functions/src/todos.handler",
+      "POST /todos":{
+        // authorizer: "none",
+        function: {
+          handler:  "packages/functions/src/todos.handler"
+        }
+      },
       "POST /signed-url":{
         function: {
           environment: {
@@ -44,6 +49,8 @@ export function API({ stack }: StackContext) {
       }
     },
   });
+
+  api.attachPermissionsToRoute("POST /signed-url", [assetsBucket, "grantPut"])
 
   const web = new StaticSite(stack, "web", {
     path: "packages/web",

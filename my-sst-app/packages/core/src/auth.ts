@@ -25,7 +25,7 @@ type AuthEnv = {
 export const authMiddleware = createMiddleware<AuthEnv>(async (c, next) => {
   const userId = c.env.event.requestContext?.authorizer?.jwt?.claims.sub
   if (!userId) {
-    return c.json({ error: "Unauthorized" }, 401)
+    return c.json({ error: "Unauthorized from lambda function" }, 401)
   }
   c.set('userId', userId)
   await next()
