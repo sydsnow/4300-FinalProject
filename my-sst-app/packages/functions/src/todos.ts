@@ -20,7 +20,6 @@ app.post("/todos", authMiddleware, async (c) => {
     const body = await c.req.json();
     const todo = {
         ...body.todo,
-        //created_at: new Date(),
         userId: userId,
     };
     const newTodo = await db.insert(todosTable).values(todo).returning();

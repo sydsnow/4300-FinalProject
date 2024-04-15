@@ -46,7 +46,14 @@ export function API({ stack }: StackContext) {
           },
           handler: "packages/functions/src/s3.handler",
         }
-      }
+      },
+      "GET /profile": "packages/functions/src/profile.handler",
+      "POST /profile":{
+        //authorizer: "none",
+        function: {
+          handler:  "packages/functions/src/profile.handler"
+        }
+      },
     },
   });
 
