@@ -4,7 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { useState } from 'react';
 import '../../App.css'
 import { useMutation } from '@tanstack/react-query';
-import { FormProvider } from 'react-hook-form';
+//import { FormProvider } from 'react-hook-form';
 import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute('/_authenticated/profile')({
@@ -13,8 +13,8 @@ export const Route = createFileRoute('/_authenticated/profile')({
 
 type Profile = {
   imageUrl?: string,
-  id: integer,
-  userId: string
+  //id: number,
+  //userId: string
 };
 
 
@@ -95,7 +95,12 @@ function ProfilePage() {
       },
       onSubmit: async ({ value }) => {
         console.log("submitting", value); 
-        await mutation.mutateAsync({ data: value as Image, image: value.image });
+        if (data && data.profile) {
+          await mutation.mutateAsync({ data: data.profile, image: value.image });
+        } else {
+          // Handle the case when data.profile is undefined
+          console.error("Profile data is missing");
+        }
         console.log("done");
       }})
       async function getProfile() {
@@ -115,7 +120,7 @@ function ProfilePage() {
         if (!res.ok) {
           throw new Error("Something went wrong");
         }
-        return (await res.json()) as { profile: Profile[] };
+        return (await res.json()) as { profile: Profile };
       }
       const {  data } = useQuery({
         queryKey: ["getProfile"],
@@ -127,9 +132,8 @@ function ProfilePage() {
     <div>
       <h2>Hi, {user?.given_name}!</h2>
       <p>{user?.email}</p>
-      <div>{data?.profile.imageUrl && <img src={profile.imageUrl}/>}</div>
+      <div>{data?.profile.imageUrl && <img src={data?.profile.imageUrl}/>}</div>
       <div className="self-center">
-      <FormProvider>
           <form
             className="flex flex-col gap-y-10"
             onSubmit={(e) => {
@@ -139,7 +143,7 @@ function ProfilePage() {
             }}
           >
             <form.Field
-              name="imageUrl"
+              name="image"
               children={(field) => (
                 <div>
                     {filePreviewURL && <img src={filePreviewURL} alt="Profile Picture" id="profile-image"/>}
@@ -165,69 +169,8 @@ function ProfilePage() {
             />
             <button type="submit">Select</button>
             </form>
-            </FormProvider>
           </div>
       <button onClick={logout}>Logout</button>
     </div>
   );
-  // return (
-  //   <div>
-  //     <h2>Hi, {user?.given_name}!</h2>
-  //     <p>{user?.email}</p>
-  //     <div className="self-center">
-  //       <FormProvider>
-  //         <form
-  //           className="flex flex-col gap-y-10"
-  //           onSubmit={(e) => {
-  //             e.preventDefault();
-  //             e.stopPropagation();
-  //             void form.handleSubmit();
-  //           }}
-  //         >
-  //           <form.Field
-  //             name="image"
-  //             children={(field) => (
-  //               <div>
-  //                 {data?.profile[0]?.imageUrl && (
-  //                   <img
-  //                     src={data.profile[0].imageUrl}
-  //                     alt="Profile Picture"
-  //                     id="profile-image"
-  //                   />
-  //                 )}
-  //                 {filePreviewURL && (
-  //                   <img
-  //                     src={filePreviewURL}
-  //                     alt="Profile Picture Preview"
-  //                     id="profile-image"
-  //                   />
-  //                 )}
-  //                 <input
-  //                   type="file"
-  //                   accept='image/*'
-  //                   onBlur={field.handleBlur}
-  //                   onChange={(e) => {
-  //                     const file = e.target.files?.[0];
-  //                     if (filePreviewURL) {
-  //                       URL.revokeObjectURL(filePreviewURL);
-  //                     }
-  //                     if (file) {
-  //                       const url = URL.createObjectURL(file);
-  //                       setFilePreviewURL(url);
-  //                     } else {
-  //                       setFilePreviewURL(undefined);
-  //                     }
-  //                     field.handleChange(file);
-  //                   }}
-  //                 />
-  //               </div>
-  //             )}
-  //           />
-  //           <button type="submit">Select</button>
-  //         </form>
-  //       </FormProvider>
-  //     </div>
-  //     <button onClick={logout}>Logout</button>
-  //   </div>
-  // );
 }
